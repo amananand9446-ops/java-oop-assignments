@@ -1,0 +1,37 @@
+import java.util.concurrent.Semaphore;
+
+public class FooBar {
+
+    private int n;
+
+    Semaphore fooSema = new Semaphore(1);
+    Semaphore barSema = new Semaphore(0);
+
+    public FooBar(int n) {
+        this.n = n;
+    }
+
+    public void foo(Runnable printFoo) throws InterruptedException {
+
+        for (int i = 0; i < n; i++) {
+
+            fooSema.acquire();
+
+            printFoo.run();
+
+            barSema.release();
+        }
+    }
+
+    public void bar(Runnable printBar) throws InterruptedException {
+
+        for (int i = 0; i < n; i++) {
+
+            barSema.acquire();
+
+            printBar.run();
+
+            fooSema.release();
+        }
+    }
+}
